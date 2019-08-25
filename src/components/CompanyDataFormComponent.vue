@@ -21,13 +21,25 @@
 
         <div class="form-group">
           <label for="companySpend">COMPANY SPEND</label>
-          <input
+          <!-- <input
             v-model="companySpend"
             type="text"
             class="form-control"
             id="companySpendText"
             required
             placeholder="e.g. $150,000"
+          />-->
+          <span class="input-group-addon">$</span>
+          <input
+            type="number"
+            v-model="companySpend"
+            min="0"
+            step="0.01"
+            data-number-to-fixed="2"
+            data-number-stepfactor="100"
+            class="form-control currency"
+            placeholder="e.g. $150,000"
+            id="c2"
           />
         </div>
         <br />
@@ -171,6 +183,16 @@ export default {
       if (!this.companySpendAbility) {
         this.validFieldForm.push("inform  the company spend ability!");
         validated = false;
+      } else {
+        debugger;
+        var values = this.companySpendAbility.split("-");
+        for (var value in values) {
+          if (isNaN(values[value]) || !values[value] || values.length < 2) {
+            this.validFieldForm.push("inform  the company spend ability!");
+            validated = false;
+            break;
+          }
+        }
       }
 
       return validated;
