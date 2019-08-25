@@ -1,6 +1,6 @@
 # challengefrontend
 
-> Project implemented for the challenge porposed from company  Intricately 
+> Project frontend implemented with Vue JS for the challenge porposed from company  Intricately 
 
 ## Build Setup
 
