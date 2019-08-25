@@ -4,8 +4,11 @@
       <form class="tableCompany">
         <p>Company Table</p>
         <template>
-          <div>
-            <b-table striped hover :items="items"></b-table>
+          <div v-if="!!companies.length">
+            <b-table striped hover :items="companies"></b-table>
+          </div>
+          <div v-else>
+            <b-alert show>There are no registered companies</b-alert>
           </div>
         </template>
       </form>
@@ -16,14 +19,12 @@
 <script>
 export default {
   name: "CompanyTableFormComponent",
+  created() {
+    this.companies = this.$store.getters.companies;
+  },
   data() {
     return {
-      items: [
-        { code: 40, Company: "Microsoft", TypeService: "Cloud" },
-        { code: 21, Company: "Apple", TypeService: "Iot" },
-        { code: 89, Company: "Oracle", TypeService: "Data Base" },
-        { code: 38, Company: "IBM", TypeService: "Cloud" }
-      ]
+      companies: []
     };
   }
 };

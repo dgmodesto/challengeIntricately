@@ -5,6 +5,7 @@ import App from "./App";
 import BootstrapVue from "bootstrap-vue";
 import router from "./router";
 import VueChartJs from "vue-chartjs";
+import { store } from "./store/store";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -36,6 +37,7 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
+  store,
   router,
   components: { App },
   template: "<App/>"

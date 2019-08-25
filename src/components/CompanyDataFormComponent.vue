@@ -6,8 +6,10 @@
 
         <br />
         <div class="form-group">
-          <label for="exampleInputEmail1">COMPANY NAME</label>
+          <label for="nameCompany">COMPANY NAME</label>
           <input
+            v-model="nameCompany"
+            required
             type="text"
             class="form-control"
             id="exampleInputEmail1"
@@ -18,34 +20,38 @@
         <br />
 
         <div class="form-group">
-          <label for="exampleInputPassword1">COMPANY SPEND</label>
+          <label for="companySpend">COMPANY SPEND</label>
           <input
+            v-model="companySpend"
             type="text"
             class="form-control"
-            id="exampleInputPassword1"
+            id="companySpendText"
+            required
             placeholder="e.g. $150,000"
           />
         </div>
         <br />
 
         <div class="form-group">
-          <label for="exampleInputPassword1">COMPANY SPEND ABILITY</label>
+          <label for="companySpendAbility">COMPANY SPEND ABILITY</label>
           <input
             type="text"
+            v-model="companySpendAbility"
             class="form-control"
-            id="exampleInputPassword1"
+            required
+            id="companySpendAbilityText"
             placeholder="e.g. $150,000 - $333,000"
           />
         </div>
         <br />
 
         <div class="form-group">
-          <label for="exampleFormControlTextarea1">NOTES</label>
+          <label for="notes">NOTES</label>
           <textarea
             v-b-modal.my-modal
-            v-model="valueTextArea"
+            v-model="notes"
             class="form-control"
-            id="exampleFormControlTextarea1"
+            id="notesTextArea"
             rows="5"
             placeholder="e.g. Good tech Company"
           ></textarea>
@@ -56,6 +62,7 @@
     <!-- MODAL  -->
     <b-modal
       id="my-modal"
+      ref="modalForm"
       centered
       title="ADITIONAL NOTES"
       header-text-variant="secondary"
@@ -63,7 +70,7 @@
     >
       <div class="form-group">
         <textarea
-          v-model="valueTextArea"
+          v-model="notes"
           class="form-control"
           id="exampleFormControlTextarea2"
           rows="8"
@@ -71,7 +78,30 @@
         ></textarea>
       </div>
       <div slot="modal-footer" class="modalSave w-100">
-        <b-button variant="primary" size="sm" class="float-right" @click="show=false">Save</b-button>
+        <b-button
+          variant="primary"
+          type="submit"
+          size="sm"
+          class="float-right"
+          @click="saveCompanie"
+        >Save</b-button>
+      </div>
+    </b-modal>
+
+    <b-modal id="modalValidated" v-model="showValidatedForm" title="Validated Form">
+      <b-container fluid>
+        <ul>
+          <li v-for="(item, index) in validFieldForm" :key="index">{{ item }}</li>
+        </ul>
+      </b-container>
+
+      <div slot="modal-footer" class="w-100">
+        <b-button
+          variant="primary"
+          size="sm"
+          class="float-right"
+          @click="showValidatedForm=false"
+        >Close</b-button>
       </div>
     </b-modal>
   </div>
@@ -84,8 +114,82 @@ export default {
     return {
       routesNavigation: "Home / ComponentData",
       modaSaveShow: false,
-      valueTextArea: ""
+      nameCompany: "",
+      companySpend: "",
+      companySpendAbility: "",
+      notes: "",
+      company: {},
+      validFieldForm: [],
+      showValidatedForm: false
     };
+  },
+  methods: {
+    saveCompanie() {
+      debugger;
+      if (this.validForm()) {
+        var companies = this.$store.getters.companies;
+
+        this.company.nameCompany = this.nameCompany;
+        this.company.companySpend = this.companySpend;
+        this.company.companySpendAbility = this.companySpendAbility;
+        this.company.notes = this.notes;
+
+        companies.push(this.company);
+        this.change(companies);
+
+        this.makeToast(
+          "success",
+          "Add Company",
+          "successfully registered company"
+        );
+
+        this.$refs["modalForm"].hide();
+        this.refreshScreen();
+      } else {
+        this.showModalValidated();
+      }
+    },
+    showModalValidated() {
+      this.$root.$emit("bv::show::modal", "modalValidated", "#btnShow");
+    },
+    change: function(companies) {
+      debugger;
+      this.$store.commit("change", companies);
+    },
+    validForm() {
+      let validated = true;
+      this.validFieldForm = [];
+      if (!this.nameCompany) {
+        this.validFieldForm.push("inform  the company name!");
+        validated = false;
+      }
+      if (!this.companySpend) {
+        this.validFieldForm.push("inform  the company spend!");
+        validated = false;
+      }
+
+      if (!this.companySpendAbility) {
+        this.validFieldForm.push("inform  the company spend ability!");
+        validated = false;
+      }
+
+      return validated;
+    },
+    makeToast(variant = null, title, message) {
+      this.$bvToast.toast(message, {
+        toaster: "b-toaster-bottom-left",
+        title: title,
+        variant: variant,
+        solid: true
+      });
+    },
+    refreshScreen() {
+      this.company = [];
+      this.nameCompany = "";
+      this.companySpend = "";
+      this.companySpendAbility = "";
+      this.notes = "";
+    }
   }
 };
 </script>
